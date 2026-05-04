@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Finora India – Web Dashboard</title>
+  <meta name="description" content="Finora India – Financial Literacy, Budgeting & Investment Web Dashboard"/>
+  <link rel="stylesheet" href="style-web.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ══ LOGIN PAGE ══════════════════════════════════════════ -->
+<div id="loginPage" class="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">💡</div>
+      <div>
+        <div class="login-logo-name">Finora <span>India</span></div>
+        <div class="login-logo-tagline">Your Financial Companion 🇮🇳</div>
+      </div>
+    </div>
+    <h2 class="login-title">Welcome back</h2>
+    <p class="login-sub">Sign in to your Finora account</p>
+    <div id="loginError" class="login-error" style="display:none">⚠️ Invalid email or password</div>
+    <div class="login-field">
+      <label class="login-label">Email</label>
+      <input type="email" id="loginEmail" class="login-input" placeholder="demo@finora.in" value="demo@finora.in"/>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <div style="position:relative">
+        <input type="password" id="loginPass" class="login-input" placeholder="finora123" value="finora123" style="padding-right:44px"/>
+        <button class="login-eye" onclick="togglePass()" id="eyeBtn">👁️</button>
+      </div>
+    </div>
+    <div class="login-demo-hint">🔑 Demo: <b>demo@finora.in</b> / <b>finora123</b></div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-footer">By signing in, you agree to our Terms &amp; Privacy Policy</div>
+  </div>
+</div>
+
+<div id="web-app" style="display:none">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">💡</div>
+      <div class="sb-logo-text">Finora <span>India</span></div>
+    </div>
+    <div class="sb-xp" id="sbXP">⭐ <span id="sbXPVal">0</span> XP · Level <span id="sbLevel">1</span></div>
+    <nav class="sb-nav">
+      <button class="sb-item active" id="snav-learn" onclick="wNavigate('learn')"><span>📚</span> Learn</button>
+      <button class="sb-item" id="snav-invest" onclick="wNavigate('invest')"><span>📈</span> Invest</button>
+      <button class="sb-item" id="snav-budget" onclick="wNavigate('budget')"><span>💰</span> Budget</button>
+      <button class="sb-item" id="snav-chat" onclick="wNavigate('chat')"><span>🤖</span> Assistant</button>
+      <button class="sb-item" id="snav-statements" onclick="wNavigate('statements')"><span>📂</span> Statements</button>
+      <button class="sb-item" id="snav-telegram" onclick="wNavigate('telegram')"><span>✈️</span> Alerts</button>
+      <button class="sb-item" id="snav-fraud" onclick="wNavigate('fraud')"><span>🛡️</span> Safety</button>
+    </nav>
+    <div class="sb-footer">Financial Companion · India 🇮🇳</div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="web-right">
+  <!-- TOP BAR with Profile -->
+  <div class="top-bar">
+    <div class="top-bar-left" id="topBarTitle">📚 Financial Lessons</div>
+    <div class="top-bar-right">
+      <div class="profile-avatar" id="profileAvatar" onclick="toggleAccountSettings()" title="Account Settings">
+        <span id="profileInitials">D</span>
+      </div>
+    </div>
+  </div>
+
+  <main class="web-main" id="webMain">
+
+    <!-- LEARN -->
+    <section id="wsec-learn" class="wsection active">
+      <div class="web-heading">📚 Financial Lessons</div>
+      <p class="web-sub">Earn XP, level up, and master money management</p>
+      <div class="w-xp-bar-wrap"><div class="w-xp-bar-fill" id="wXpFill" style="width:0%"></div></div>
+      <div class="w-xp-text" id="wXpText">Level 1 · 0 / 100 XP</div>
+      <div class="w-stats-row">
+        <div class="w-stat"><div class="w-stat-icon">🎯</div><div class="w-stat-val" id="wLessons">0</div><div class="w-stat-lbl">Lessons</div></div>
+        <div class="w-stat"><div class="w-stat-icon">🏆</div><div class="w-stat-val" id="wLevel">1</div><div class="w-stat-lbl">Level</div></div>
+        <div class="w-stat"><div class="w-stat-icon">⭐</div><div class="w-stat-val" id="wXPTotal">0</div><div class="w-stat-lbl">Total XP</div></div>
+      </div>
+      <div class="w-lesson-grid" id="wLessonGrid"></div>
+      <!-- Game Banner -->
+      <div class="game-banner" onclick="openFinanceGame()" style="margin-top:20px">
+        <div class="game-banner-left">
+          <div class="game-banner-icon">🎮</div>
+          <div>
+            <div class="game-banner-title">Finance Quest</div>
+            <div class="game-banner-sub">Dodge bad spending · Collect savings · Earn XP!</div>
+          </div>
+        </div>
+        <button class="game-banner-btn">Play Now ▶</button>
+      </div>
+    </section>
+
+    <!-- INVEST -->
+    <section id="wsec-invest" class="wsection">
+      <div class="web-heading">📈 Investment Options</div>
+      <p class="web-sub">Educational guide · India-focused · Not financial advice</p>
+      <div class="w-disclaimer">⚠️ <strong>Disclaimer:</strong> For educational purposes only. Consult a SEBI-registered advisor before investing.</div>
+      <div class="w-invest-grid" id="wInvestGrid"></div>
+    </section>
+
+    <!-- BUDGET -->
+    <section id="wsec-budget" class="wsection">
+      <div class="web-heading">💰 Smart Budget Planner</div>
+      <p class="web-sub">50/30/20 rule personalised for you</p>
+      <div class="w-budget-layout">
+        <div class="w-budget-form card-web" id="wBudgetForm">
+          <div class="wb-label">Monthly Income (₹)</div>
+          <input type="number" id="wIncome" class="w-input" placeholder="e.g. 50000" min="0"/>
+          <div class="wb-section-title">Fixed Expenses <button class="w-add-btn" onclick="wAddCat('fixed')">+ Add</button></div>
+          <div id="wFixedCats">
+            <div class="w-cat-row"><input type="text" class="w-input-sm" value="Rent"/><input type="number" class="w-input-sm w-amt" placeholder="₹ Amount"/><button onclick="wDelCat(this)">×</button></div>
+            <div class="w-cat-row"><input type="text" class="w-input-sm" value="EMI"/><input type="number" class="w-input-sm w-amt" placeholder="₹ Amount"/><button onclick="wDelCat(this)">×</button></div>
+          </div>
+          <div class="wb-section-title" style="margin-top:14px">Variable Expenses <button class="w-add-btn" onclick="wAddCat('variable')">+ Add</button></div>
+          <div id="wVariableCats">
+            <div class="w-cat-row"><input type="text" class="w-input-sm" value="Food"/><input type="number" class="w-input-sm w-amt" placeholder="₹ Amount"/><button onclick="wDelCat(this)">×</button></div>
+            <div class="w-cat-row"><input type="text" class="w-input-sm" value="Travel"/><input type="number" class="w-input-sm w-amt" placeholder="₹ Amount"/><button onclick="wDelCat(this)">×</button></div>
+            <div class="w-cat-row"><input type="text" class="w-input-sm" value="Entertainment"/><input type="number" class="w-input-sm w-amt" placeholder="₹ Amount"/><button onclick="wDelCat(this)">×</button></div>
+          </div>
+          <button class="w-btn-primary" style="margin-top:18px" onclick="wCalcBudget()">📊 Calculate Budget</button>
+        </div>
+        <div class="w-budget-result card-web" id="wBudgetResult" style="display:none">
+          <div class="wb-label" style="font-size:17px;font-weight:700;margin-bottom:16px">Budget Breakdown</div>
+          <div style="position:relative;height:240px;margin-bottom:16px"><canvas id="wBudgetChart"></canvas></div>
+          <div id="wBudgetRows"></div>
+          <div class="w-tip" id="wBudgetTip"></div>
+          <button class="w-btn-secondary" style="margin-top:14px" onclick="wResetBudget()">🔄 Recalculate</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAT -->
+    <section id="wsec-chat" class="wsection">
+      <div class="web-heading">🤖 Budget Assistant</div>
+      <p class="web-sub">Ask me anything about your finances</p>
+      <div class="w-chat-layout">
+        <div class="w-chat-box card-web">
+          <div class="w-quick-replies">
+            <button class="w-qr" onclick="wSendQuick('What is 50/30/20 rule?')">50/30/20 rule</button>
+            <button class="w-qr" onclick="wSendQuick('How do I save more?')">Save more</button>
+            <button class="w-qr" onclick="wSendQuick('What is SIP?')">What is SIP?</button>
+            <button class="w-qr" onclick="wSendQuick('Reduce my expenses')">Reduce expenses</button>
+            <button class="w-qr" onclick="wSendQuick('Tell me about fraud protection')">Fraud tips</button>
+          </div>
+          <div class="w-chat-history" id="wChatHistory"></div>
+          <div class="w-chat-input-row">
+            <input type="text" id="wChatInput" class="w-input" placeholder="Type your question…" onkeydown="if(event.key==='Enter')wSendChat()"/>
+            <button class="w-btn-primary" style="width:auto;padding:10px 20px" onclick="wSendChat()">Send ➤</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATEMENTS -->
+    <section id="wsec-statements" class="wsection">
+      <div class="web-heading">📂 Financial Statements</div>
+      <p class="web-sub">Upload your bank CSV and explore interactive insights</p>
+      <div id="wCsvUpload" class="card-web">
+        <div class="w-drop-zone" onclick="document.getElementById('wCsvFile').click()">
+          <div style="font-size:48px">📄</div>
+          <div class="wb-label" style="margin:10px 0 6px">Drop your CSV here or click to browse</div>
+          <div style="font-size:13px;color:#6B7280">Supports: Date, Description, Category, Amount columns</div>
+        </div>
+        <input type="file" id="wCsvFile" accept=".csv" style="display:none" onchange="wHandleCSV(event)"/>
+        <div style="text-align:center;margin-top:14px">
+          <button class="w-btn-secondary" style="width:auto" onclick="wLoadSample()">📋 Load Sample Data</button>
+        </div>
+      </div>
+      <div id="wCsvResults" style="display:none">
+        <div class="w-csv-summary" id="wCsvSummary"></div>
+        <div class="w-charts-row">
+          <div class="card-web"><div class="wb-label" style="margin-bottom:12px">📊 Spending by Category</div><div style="position:relative;height:260px"><canvas id="wCatChart"></canvas></div></div>
+          <div class="card-web"><div class="wb-label" style="margin-bottom:12px">📈 Monthly Cash Flow</div><div style="position:relative;height:260px"><canvas id="wFlowChart"></canvas></div></div>
+        </div>
+        <div class="card-web">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="wb-label">🧾 Transactions</div>
+            <input type="text" id="wTxSearch" placeholder="Search…" class="w-input" style="width:200px" oninput="wFilterTx()"/>
+          </div>
+          <div style="overflow-x:auto"><table class="w-tx-table"><thead><tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr></thead><tbody id="wTxBody"></tbody></table></div>
+          <div id="wTxCount" style="font-size:12px;color:#6B7280;margin-top:8px"></div>
+        </div>
+        <button class="w-btn-secondary" style="width:auto" onclick="wClearCSV()">🗑️ Clear & Upload New</button>
+      </div>
+    </section>
+
+    <!-- TELEGRAM -->
+    <section id="wsec-telegram" class="wsection">
+      <div class="web-heading">✈️ Telegram Alerts</div>
+      <p class="web-sub">Get real-time budget & spending alerts on Telegram</p>
+      <div class="w-tg-layout">
+        <div class="card-web">
+          <div class="wb-label" style="font-size:16px">🔧 Setup Guide</div>
+          <div class="w-step"><div class="w-step-n">1</div><div><b>Create bot via @BotFather</b><br><span>Open Telegram → search @BotFather → type /newbot → copy the Token</span><br><a href="https://t.me/BotFather" target="_blank" class="w-link">Open @BotFather ↗</a></div></div>
+          <div class="w-step"><div class="w-step-n">2</div><div><b>Get Chat ID</b><br><span>Message your bot, then visit: <code>api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code></span></div></div>
+          <div class="w-step"><div class="w-step-n">3</div><div><b>Enter credentials & test below</b></div></div>
+        </div>
+        <div class="card-web">
+          <div class="wb-label" style="font-size:16px;margin-bottom:14px">🔑 Credentials</div>
+          <label class="wb-label">Bot Token</label>
+          <input type="text" id="wTgToken" class="w-input" placeholder="123456:ABCdef..."/>
+          <label class="wb-label" style="margin-top:10px">Chat ID</label>
+          <input type="text" id="wTgChatId" class="w-input" placeholder="-100... or 123..."/>
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button class="w-btn-secondary" style="flex:1" onclick="wSaveTG()">💾 Save</button>
+            <button class="w-btn-primary" style="flex:1" onclick="wTestTG()">🧪 Test</button>
+          </div>
+          <div id="wTgStatus" style="margin-top:10px;font-size:13px;text-align:center"></div>
+          <div style="border-top:1px solid #E5E7EB;margin-top:16px;padding-top:16px">
+            <div class="wb-label">📨 Custom Message</div>
+            <textarea id="wTgMsg" class="w-input" style="height:80px;resize:none" placeholder="Type message…"></textarea>
+            <button class="w-btn-primary" style="margin-top:10px" onclick="wSendCustomTG()">📤 Send to Telegram</button>
+          </div>
+        </div>
+        <div class="card-web">
+          <div class="wb-label" style="font-size:16px;margin-bottom:14px">🔔 Notification Settings</div>
+          <div class="w-toggle-row"><div><b>Budget Calculated</b><br><small>Alert on budget calculation</small></div><label class="w-switch"><input type="checkbox" id="wTgBudget" checked/><span class="w-slider"></span></label></div>
+          <div class="w-toggle-row"><div><b>CSV Uploaded</b><br><small>Alert on statement upload</small></div><label class="w-switch"><input type="checkbox" id="wTgCSV" checked/><span class="w-slider"></span></label></div>
+          <div class="w-toggle-row" style="border:none"><div><b>Overspending Warning</b><br><small>Alert when expenses exceed income</small></div><label class="w-switch"><input type="checkbox" id="wTgOver" checked/><span class="w-slider"></span></label></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FRAUD -->
+    <section id="wsec-fraud" class="wsection">
+      <div class="web-heading">🛡️ Fraud Protection</div>
+      <p class="web-sub">Stay safe from financial scams in India</p>
+      <div class="w-fraud-layout">
+        <div>
+          <div class="w-fraud-grid" id="wFraudGrid"></div>
+        </div>
+        <div>
+          <div class="card-web w-report-box">
+            <div class="wb-label" style="font-size:18px;margin-bottom:8px">🚨 Got Scammed?</div>
+            <p style="font-size:14px;opacity:.85;margin-bottom:16px;line-height:1.7">Report immediately to India's official Cybercrime portal. Early reporting can help freeze fraudulent transactions.<br><br><b>Helpline: 1930</b> · 24×7 Available</p>
+            <button class="w-btn-danger" onclick="window.open('https://cybercrime.gov.in','_blank')">🚨 Report on cybercrime.gov.in</button>
+          </div>
+          <div class="card-web" style="margin-top:14px">
+            <div class="wb-label" style="font-size:15px;margin-bottom:12px">🏛️ Official Portals</div>
+            <a class="w-official-link" href="https://sebi.gov.in/sebiweb/other/ComplainsHome.jsp" target="_blank">📋 SEBI SCORES – Investment fraud</a>
+            <a class="w-official-link" href="https://consumerhelpline.gov.in" target="_blank">📞 National Consumer Helpline – 1800-11-4000</a>
+            <a class="w-official-link" href="https://rbi.org.in/Scripts/Complaints.aspx" target="_blank">🏦 RBI Ombudsman – Bank & payment fraud</a>
+            <a class="w-official-link" href="https://sancharsakhi.gov.in/" target="_blank">📱 Sanchar Saathi – SIM / mobile fraud</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  </div><!-- /web-right -->
+</div>
+
+<!-- ══ ACCOUNT SETTINGS MODAL ══════════════════════════════ -->
+<div id="accountSettingsOverlay" class="acct-overlay" onclick="closeAccountSettings(event)">
+  <div class="acct-modal">
+    <div class="acct-header">
+      <div class="acct-avatar-lg">
+        <span id="acctInitialsLg">D</span>
+      </div>
+      <div>
+        <div class="acct-name" id="acctName">Demo User</div>
+        <div class="acct-email" id="acctEmail">demo@finora.in</div>
+      </div>
+      <button class="acct-close" onclick="closeAccountSettings()">✕</button>
+    </div>
+    <div class="acct-body">
+      <div class="acct-section-title">Account Details</div>
+      <div class="acct-row"><span>📧 Email</span><span id="acctEmailVal">demo@finora.in</span></div>
+      <div class="acct-row"><span>👤 Name</span><span id="acctNameVal">Demo User</span></div>
+      <div class="acct-row"><span>⭐ XP</span><span id="acctXpVal">0 XP · Level 1</span></div>
+      <div class="acct-row"><span>🎯 Lessons Done</span><span id="acctLessonsVal">0</span></div>
+
+      <div class="acct-section-title" style="margin-top:20px">Preferences</div>
+      <div class="acct-row"><span>🌙 Dark Mode</span><label class="w-switch"><input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"/><span class="w-slider"></span></label></div>
+      <div class="acct-row"><span>🔔 Budget Alerts</span><label class="w-switch"><input type="checkbox" id="acctBudgetAlert" checked/><span class="w-slider"></span></label></div>
+
+      <button class="acct-logout-btn" onclick="doLogout()">🚪 Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<div class="w-lesson-overlay" id="wLessonOverlay" onclick="wCloseLesson(event)">
+  <div class="w-lesson-modal" id="wLessonModal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 id="wModalTitle" style="font-size:20px;font-weight:700"></h3>
+      <button onclick="wCloseLesson()" style="background:#E5E7EB;border:none;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer">✕</button>
+    </div>
+    <div id="wSlidesContainer"></div>
+    <div class="quiz-wrap" id="wQuizWrap">
+      <hr style="margin:16px 0"/>
+      <div class="quiz-q" id="wQuizQ"></div>
+      <div class="quiz-options" id="wQuizOpts"></div>
+      <div class="quiz-result" id="wQuizResult">
+        <div class="big-emoji" id="wQuizEmoji"></div>
+        <h4 id="wQuizTitle"></h4>
+        <p id="wQuizMsg"></p>
+        <div class="xp-earned mt-10" id="wXpEarned"></div>
+        <button class="w-btn-primary mt-20" onclick="wCloseLesson()">🎉 Continue</button>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px" id="wSlideNav">
+      <button class="w-btn-secondary" style="width:auto;padding:10px 20px" id="wBtnPrev" onclick="wPrev()">← Back</button>
+      <span id="wSlideCounter" style="font-size:13px;color:#6B7280"></span>
+      <button class="w-btn-primary" style="width:auto;padding:10px 20px" id="wBtnNext" onclick="wNext()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINANCE GAME OVERLAY ══════════════════════════════ -->
+<div id="gameOverlay" class="game-overlay">
+  <div class="game-modal">
+    <div class="game-modal-header">
+      <span class="game-modal-title">🎮 Finance Quest</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="game-score-badge">💰 Score: <span id="gameScore">0</span></span>
+        <button class="game-close-btn" onclick="closeFinanceGame()">✕</button>
+      </div>
+    </div>
+    <div class="game-hud">
+      <div class="game-hud-item">❤️ <span id="gameLives">3</span></div>
+      <div class="game-hud-item">📏 Level <span id="gameLevel">1</span></div>
+      <div class="game-hud-item">🪙 <span id="gameCoins">0</span> coins</div>
+    </div>
+    <div class="game-tip-bar" id="gameTip">Collect 💰 savings coins, dodge 💸 bad spending!</div>
+    <canvas id="gameCanvas" class="game-canvas"></canvas>
+    <div class="game-controls-hint">⌨️ Arrow keys to move &nbsp;|&nbsp; Space/Click to jump</div>
+    <div id="gameStartScreen" class="game-start-screen">
+      <div class="gss-emoji">🎮</div>
+      <div class="gss-title">Finance Quest</div>
+      <div class="gss-sub">Dodge bad spending, collect savings coins &amp; learn financial literacy!</div>
+      <button class="gss-btn" onclick="startFinanceGame()">▶ Start Game</button>
+    </div>
+    <div id="gameOverScreen" class="game-over-screen" style="display:none">
+      <div class="gss-emoji" id="goEmoji">💀</div>
+      <div class="gss-title" id="goTitle">Game Over!</div>
+      <div class="gss-sub" id="goMsg">Better luck next time!</div>
+      <div class="go-xp" id="goXP">+0 XP</div>
+      <button class="gss-btn" onclick="startFinanceGame()">🔄 Play Again</button>
+    </div>
+  </div>
+</div>
+
+<script src="web-app.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

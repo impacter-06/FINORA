@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+  <title>Finora India – Financial Literacy App</title>
+  <meta name="description" content="Learn to save, budget, and invest wisely with Finora India – your personal finance companion."/>
+  <link rel="stylesheet" href="style.css"/>
+  <!-- Chart.js for interactive graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ══ LOGIN PAGE ══════════════════════════════════════════ -->
+<div id="loginPage" class="login-overlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon">💡</div>
+      <div>
+        <div class="login-logo-name">Finora <span>India</span></div>
+        <div class="login-logo-tagline">Your Financial Companion 🇮🇳</div>
+      </div>
+    </div>
+    <h2 class="login-title">Welcome back</h2>
+    <p class="login-sub">Sign in to your Finora account</p>
+    <div id="loginError" class="login-error" style="display:none">⚠️ Invalid email or password</div>
+    <div class="login-field">
+      <label class="login-label">Email</label>
+      <input type="email" id="loginEmail" class="login-input" placeholder="demo@finora.in" value="demo@finora.in"/>
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <div style="position:relative">
+        <input type="password" id="loginPass" class="login-input" placeholder="finora123" value="finora123" style="padding-right:44px"/>
+        <button class="login-eye" onclick="mTogglePass()" id="mEyeBtn">👁️</button>
+      </div>
+    </div>
+    <div class="login-demo-hint">🔑 Demo: <b>demo@finora.in</b> / <b>finora123</b></div>
+    <button class="login-btn" onclick="mDoLogin()">Sign In →</button>
+    <div class="login-footer">By signing in, you agree to our Terms &amp; Privacy Policy</div>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+
+  <!-- ── TOP BAR ────────────────────────────────── -->
+  <header class="topbar">
+    <div class="logo">
+      <div class="logo-icon">💡</div>
+      <div class="logo-text">Finora<span>India • Financial Companion</span></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div class="xp-badge" id="topXP">⭐ <span id="topXPVal">0</span> XP</div>
+      <div class="m-profile-avatar" id="mProfileAvatar" onclick="mToggleSettings()" title="Account">
+        <span id="mProfileInitials">D</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── SCROLL AREA ───────────────────────────── -->
+  <main class="scroll-area" id="scrollArea">
+
+    <!-- ═══ SECTION 1: LEARN ══════════════════════ -->
+    <section id="sec-learn" class="section active">
+      <div class="greeting-banner">
+        <h2 id="greetMsg">Good Morning! 👋</h2>
+        <p>Let's learn something new about money today.</p>
+        <div class="xp-bar-wrap"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+        <div class="xp-text" id="xpBarText">Level 1 · 0 / 100 XP</div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-val" id="lessonsCount">0</div>
+          <div class="stat-lbl">Lessons Done</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🏆</div>
+          <div class="stat-val" id="levelBadge">1</div>
+          <div class="stat-lbl">Level</div>
+        </div>
+      </div>
+
+      <div class="section-title">📚 Financial Lessons</div>
+      <div class="section-sub">Tap a lesson to start learning</div>
+
+      <!-- Game Banner -->
+      <div class="game-banner" onclick="openFinanceGame()">
+        <div class="game-banner-left">
+          <div class="game-banner-icon">🎮</div>
+          <div>
+            <div class="game-banner-title">Finance Quest</div>
+            <div class="game-banner-sub">Dodge bad spending · Collect savings!</div>
+          </div>
+        </div>
+        <button class="game-banner-btn">Play Now ▶</button>
+      </div>
+
+      <div class="lesson-grid" id="lessonGrid">
+        <!-- Lesson cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 2: INVEST ══════════════════════ -->
+    <section id="sec-invest" class="section">
+      <div class="section-title">📈 Investment Options</div>
+      <div class="section-sub">Educational guide · India-focused</div>
+
+      <div class="disclaimer-banner">
+        <span>⚠️</span>
+        <p><strong>Disclaimer:</strong> This is not financial advice. Information shown is for educational purposes only. Please consult a SEBI-registered financial advisor before investing.</p>
+      </div>
+
+      <div id="investCards">
+        <!-- Investment cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 3: BUDGET ══════════════════════ -->
+    <section id="sec-budget" class="section">
+      <div class="section-title">💰 Smart Budget</div>
+      <div class="section-sub">Enter your income &amp; expenses below</div>
+
+      <div class="card budget-form" id="budgetFormCard">
+        <div class="slide-title" style="margin-bottom:16px">Monthly Income</div>
+        <div class="input-prefix">
+          <span>₹</span>
+          <input type="number" id="income" placeholder="e.g. 25000" min="0"/>
+        </div>
+
+        <div class="categories-header">
+          <div class="slide-title">Fixed Expenses</div>
+          <button class="btn btn-outline btn-sm" onclick="addCategory('fixed')">+ Add</button>
+        </div>
+        <div id="fixedCats">
+          <div class="cat-row">
+            <input type="text" value="Rent" placeholder="Name"/>
+            <div class="input-prefix" style="flex:0 0 auto">
+              <span>₹</span>
+              <input type="number" placeholder="Amount" style="padding-left:24px"/>
+            </div>
+            <button class="del-cat" onclick="deleteCat(this)">×</button>
+          </div>
+          <div class="cat-row">
+            <input type="text" value="EMI" placeholder="Name"/>
+            <div class="input-prefix" style="flex:0 0 auto">
+              <span>₹</span>
+              <input type="number" placeholder="Amount" style="padding-left:24px"/>
+            </div>
+            <button class="del-cat" onclick="deleteCat(this)">×</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="categories-header">
+          <div class="slide-title">Variable Expenses</div>
+          <button class="btn btn-outline btn-sm" onclick="addCategory('variable')">+ Add</button>
+        </div>
+        <div id="variableCats">
+          <div class="cat-row">
+            <input type="text" value="Food" placeholder="Name"/>
+            <div class="input-prefix" style="flex:0 0 auto">
+              <span>₹</span>
+              <input type="number" placeholder="Amount" style="padding-left:24px"/>
+            </div>
+            <button class="del-cat" onclick="deleteCat(this)">×</button>
+          </div>
+          <div class="cat-row">
+            <input type="text" value="Travel" placeholder="Name"/>
+            <div class="input-prefix" style="flex:0 0 auto">
+              <span>₹</span>
+              <input type="number" placeholder="Amount" style="padding-left:24px"/>
+            </div>
+            <button class="del-cat" onclick="deleteCat(this)">×</button>
+          </div>
+          <div class="cat-row">
+            <input type="text" value="Entertainment" placeholder="Name"/>
+            <div class="input-prefix" style="flex:0 0 auto">
+              <span>₹</span>
+              <input type="number" placeholder="Amount" style="padding-left:24px"/>
+            </div>
+            <button class="del-cat" onclick="deleteCat(this)">×</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary mt-14" onclick="calculateBudget()">📊 Calculate My Budget</button>
+      </div>
+
+      <!-- Budget Result -->
+      <div class="budget-result card" id="budgetResult">
+        <div class="slide-title" style="margin-bottom:16px">Your Budget Breakdown</div>
+
+        <div class="bud-pie-wrap">
+          <div class="bud-pie-item">
+            <div class="pie-icon">🏠</div>
+            <div class="pie-lbl">Needs</div>
+            <div class="pie-val" id="rNeeds">—</div>
+          </div>
+          <div class="bud-pie-item">
+            <div class="pie-icon">🎉</div>
+            <div class="pie-lbl">Wants</div>
+            <div class="pie-val" id="rWants">—</div>
+          </div>
+          <div class="bud-pie-item">
+            <div class="pie-icon">💎</div>
+            <div class="pie-lbl">Savings</div>
+            <div class="pie-val" id="rSavings">—</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="bud-split-row"><span class="bud-label">🏠 Needs (50%)</span><span class="bud-amount" id="needsAmt">₹0</span></div>
+          <div class="bud-bar-wrap"><div class="bud-bar-fill bud-color-needs" id="needsBar" style="width:0%"></div></div>
+
+          <div class="bud-split-row"><span class="bud-label">🎉 Wants (30%)</span><span class="bud-amount" id="wantsAmt">₹0</span></div>
+          <div class="bud-bar-wrap"><div class="bud-bar-fill bud-color-wants" id="wantsBar" style="width:0%"></div></div>
+
+          <div class="bud-split-row"><span class="bud-label">💎 Savings (20%)</span><span class="bud-amount" id="savingsAmt">₹0</span></div>
+          <div class="bud-bar-wrap"><div class="bud-bar-fill bud-color-savings" id="savingsBar" style="width:0%"></div></div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="slide-title" style="margin-bottom:10px">Expense Details</div>
+        <div id="catBreakdown"></div>
+
+        <div class="card-sm mt-10" id="budgetTip" style="background:var(--primary-lt)">
+          <p style="font-size:13px;color:var(--primary)"></p>
+        </div>
+
+        <button class="btn btn-secondary mt-14" onclick="resetBudget()">🔄 Recalculate</button>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 4: CHAT ═══════════════════════ -->
+    <section id="sec-chat" class="section">
+      <div class="section-title">🤖 Budget Assistant</div>
+      <div class="section-sub">Ask me anything about your finances</div>
+
+      <div class="chat-wrap">
+        <div class="quick-replies" id="quickReplies">
+          <button class="qr-btn" onclick="sendQuick('What is 50/30/20 rule?')">50/30/20 rule</button>
+          <button class="qr-btn" onclick="sendQuick('How do I save more?')">Save more</button>
+          <button class="qr-btn" onclick="sendQuick('What is SIP?')">What is SIP?</button>
+          <button class="qr-btn" onclick="sendQuick('Reduce my expenses')">Reduce expenses</button>
+        </div>
+        <div class="chat-history" id="chatHistory"></div>
+        <div class="chat-input-row">
+          <input type="text" id="chatInput" placeholder="Type your question…" onkeydown="handleChatKey(event)"/>
+          <button class="chat-send" onclick="sendChat()">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 5: STATEMENTS (CSV) ══════════ -->
+    <section id="sec-statements" class="section">
+      <div class="section-title">📂 Financial Statements</div>
+      <div class="section-sub">Upload your bank CSV to see interactive insights</div>
+
+      <!-- Upload card -->
+      <div class="csv-upload-card" id="csvUploadCard">
+        <div class="csv-drop-zone" id="csvDropZone" onclick="document.getElementById('csvFileInput').click()">
+          <div class="csv-drop-icon">📄</div>
+          <div class="csv-drop-title">Upload Bank Statement</div>
+          <div class="csv-drop-sub">CSV format · Drag &amp; drop or tap to browse</div>
+          <div class="csv-sample">Supports: Date, Description, Amount, Category columns</div>
+        </div>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="handleCSVUpload(event)"/>
+        <div style="text-align:center;margin-top:12px">
+          <button class="btn btn-outline btn-sm" onclick="loadSampleCSV()">📋 Load Sample Data</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="csvResults" style="display:none">
+
+        <!-- Summary Cards -->
+        <div class="csv-summary-row" id="csvSummaryCards"></div>
+
+        <!-- Charts -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="slide-title" style="margin-bottom:12px">📊 Spending by Category</div>
+          <div style="position:relative;height:220px">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px">
+          <div class="slide-title" style="margin-bottom:12px">📈 Monthly Cash Flow</div>
+          <div style="position:relative;height:200px">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Transaction Table -->
+        <div class="card" style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="slide-title">🧾 Transactions</div>
+            <input type="text" id="txSearch" placeholder="Search…" style="width:110px;padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Poppins',sans-serif;outline:none" oninput="filterTransactions()"/>
+          </div>
+          <div id="txTableWrap" style="overflow-x:auto">
+            <table class="tx-table" id="txTable">
+              <thead>
+                <tr><th>Date</th><th>Description</th><th>Category</th><th>Amount</th></tr>
+              </thead>
+              <tbody id="txBody"></tbody>
+            </table>
+          </div>
+          <div id="txCount" style="font-size:11px;color:var(--muted);margin-top:8px;text-align:right"></div>
+        </div>
+
+        <button class="btn btn-secondary" onclick="clearCSV()">🗑️ Clear &amp; Upload New</button>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 6: TELEGRAM ═══════════════════ -->
+    <section id="sec-telegram" class="section">
+      <div class="tg-header">
+        <div class="tg-header-icon">✈️</div>
+        <h2>Telegram Alerts</h2>
+        <p>Get budget &amp; spending alerts directly on Telegram</p>
+      </div>
+
+      <!-- Setup Card -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="slide-title" style="margin-bottom:4px">🔧 Setup Guide</div>
+        <div class="section-sub" style="margin-bottom:12px">Follow these 3 steps to connect</div>
+
+        <div class="tg-step">
+          <div class="tg-step-num">1</div>
+          <div>
+            <div class="tg-step-title">Create a Bot via BotFather</div>
+            <div class="tg-step-body">Open Telegram, search <strong>@BotFather</strong>, send <code>/newbot</code> and follow the prompts. Copy the <strong>Bot Token</strong> given to you.</div>
+            <button class="btn btn-outline btn-sm mt-10" style="width:auto" onclick="window.open('https://t.me/BotFather','_blank')">Open @BotFather ↗</button>
+          </div>
+        </div>
+        <div class="tg-step">
+          <div class="tg-step-num">2</div>
+          <div>
+            <div class="tg-step-title">Get your Chat ID</div>
+            <div class="tg-step-body">Message your new bot once, then open: <code>https://api.telegram.org/bot&lt;TOKEN&gt;/getUpdates</code> — find <strong>"chat":{"id": ...}</strong></div>
+          </div>
+        </div>
+        <div class="tg-step">
+          <div class="tg-step-num">3</div>
+          <div>
+            <div class="tg-step-title">Enter credentials below &amp; test</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Credentials Card -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="slide-title" style="margin-bottom:12px">🔑 Your Credentials</div>
+        <label class="tg-label">Bot Token</label>
+        <input type="text" id="tgToken" placeholder="123456789:ABCdefGHIjklMNOpqRSTuvWXyz" class="tg-input"/>
+        <label class="tg-label">Chat ID</label>
+        <input type="text" id="tgChatId" placeholder="-100123456789 or 123456789" class="tg-input"/>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-outline btn-sm" style="flex:1" onclick="saveTGCredentials()">💾 Save</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="sendTGTest()">🧪 Send Test</button>
+        </div>
+        <div id="tgStatus" style="margin-top:10px;font-size:12px;text-align:center"></div>
+      </div>
+
+      <!-- Notification Settings -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="slide-title" style="margin-bottom:12px">🔔 Notification Triggers</div>
+
+        <div class="tg-toggle-row">
+          <div>
+            <div class="tg-toggle-title">Budget Calculated</div>
+            <div class="tg-toggle-sub">Alert when you calculate your budget</div>
+          </div>
+          <label class="tg-switch">
+            <input type="checkbox" id="tgNBudget" checked/>
+            <span class="tg-slider"></span>
+          </label>
+        </div>
+
+        <div class="tg-toggle-row">
+          <div>
+            <div class="tg-toggle-title">CSV Statement Uploaded</div>
+            <div class="tg-toggle-sub">Alert when you upload a bank statement</div>
+          </div>
+          <label class="tg-switch">
+            <input type="checkbox" id="tgNCSV" checked/>
+            <span class="tg-slider"></span>
+          </label>
+        </div>
+
+        <div class="tg-toggle-row">
+          <div>
+            <div class="tg-toggle-title">Overspending Warning</div>
+            <div class="tg-toggle-sub">Alert when expenses exceed income</div>
+          </div>
+          <label class="tg-switch">
+            <input type="checkbox" id="tgNOverspend" checked/>
+            <span class="tg-slider"></span>
+          </label>
+        </div>
+
+        <div class="tg-toggle-row" style="border:none">
+          <div>
+            <div class="tg-toggle-title">Weekly Summary</div>
+            <div class="tg-toggle-sub">Schedule weekly finance tips</div>
+          </div>
+          <label class="tg-switch">
+            <input type="checkbox" id="tgNWeekly"/>
+            <span class="tg-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Send Custom -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="slide-title" style="margin-bottom:10px">📨 Send Custom Alert</div>
+        <textarea id="tgCustomMsg" placeholder="Type your message…" style="width:100%;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-size:13px;font-family:'Poppins',sans-serif;outline:none;resize:none;height:80px"></textarea>
+        <button class="btn btn-primary mt-10" onclick="sendTGCustom()">📤 Send to Telegram</button>
+      </div>
+    </section>
+
+    <!-- ═══ SECTION 7: FRAUD ══════════════════════ -->
+    <section id="sec-fraud" class="section">
+      <div class="fraud-header">
+        <div class="fh-icon">🛡️</div>
+        <h2>Stay Safe from Fraud</h2>
+        <p>Learn to recognise &amp; report financial scams in India</p>
+      </div>
+
+      <div class="section-title" style="margin-bottom:10px">⚠️ Common Scam Warnings</div>
+      <div id="fraudTips">
+        <!-- Injected by JS -->
+      </div>
+
+      <div class="report-box">
+        <h3>🚨 Got Scammed?</h3>
+        <p>Report immediately to India's official Cybercrime portal. Early reporting can help freeze fraudulent transactions.</p>
+        <div class="url-badge">🔗 cybercrime.gov.in</div>
+        <button class="btn btn-danger" onclick="window.open('https://cybercrime.gov.in','_blank')">🚨 Report Fraud Now</button>
+        <p style="margin-top:12px;font-size:11px;opacity:.7">Helpline: <strong>1930</strong> · Available 24×7</p>
+      </div>
+
+      <!-- Additional Official Links -->
+      <div class="card" style="margin-top:14px">
+        <div class="slide-title" style="margin-bottom:10px">🏛️ Official Portals</div>
+        <div class="official-links">
+          <a class="official-link" href="https://sebi.gov.in/sebiweb/other/ComplainsHome.jsp" target="_blank">
+            <span>📋</span><div><div class="ol-title">SEBI SCORES</div><div class="ol-sub">Report investment fraud</div></div>
+          </a>
+          <a class="official-link" href="https://consumerhelpline.gov.in" target="_blank">
+            <span>📞</span><div><div class="ol-title">National Consumer Helpline</div><div class="ol-sub">Dial 1800-11-4000</div></div>
+          </a>
+          <a class="official-link" href="https://rbi.org.in/Scripts/Complaints.aspx" target="_blank">
+            <span>🏦</span><div><div class="ol-title">RBI Complaint Portal</div><div class="ol-sub">Bank &amp; payment frauds</div></div>
+          </a>
+          <a class="official-link" href="https://sancharsakhi.gov.in/" target="_blank">
+            <span>📱</span><div><div class="ol-title">Sanchar Saathi</div><div class="ol-sub">Report SIM / mobile fraud</div></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- end scroll-area -->
+
+  <!-- ── BOTTOM NAV ────────────────────────────── -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-learn"  onclick="navigate('learn')">
+      <span class="nav-icon">📚</span><span class="nav-label">Learn</span>
+    </button>
+    <button class="nav-item" id="nav-invest" onclick="navigate('invest')">
+      <span class="nav-icon">📈</span><span class="nav-label">Invest</span>
+    </button>
+    <button class="nav-item" id="nav-budget" onclick="navigate('budget')">
+      <span class="nav-icon">💰</span><span class="nav-label">Budget</span>
+    </button>
+    <button class="nav-item" id="nav-chat"   onclick="navigate('chat')">
+      <span class="nav-icon">🤖</span><span class="nav-label">Assistant</span>
+    </button>
+    <button class="nav-item" id="nav-statements" onclick="navigate('statements')">
+      <span class="nav-icon">📂</span><span class="nav-label">Statements</span>
+    </button>
+    <button class="nav-item" id="nav-telegram" onclick="navigate('telegram')">
+      <span class="nav-icon">✈️</span><span class="nav-label">Alerts</span>
+    </button>
+    <button class="nav-item" id="nav-fraud"  onclick="navigate('fraud')">
+      <span class="nav-icon">🛡️</span><span class="nav-label">Safety</span>
+    </button>
+  </nav>
+
+  <!-- ── LESSON OVERLAY ────────────────────────── -->
+  <div class="overlay" id="lessonOverlay" onclick="closeLesson(event)">
+    <div class="modal" id="lessonModal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Lesson</h3>
+        <button class="modal-close" onclick="closeLesson()">✕</button>
+      </div>
+
+      <!-- Slides are injected dynamically -->
+      <div id="slidesContainer"></div>
+
+      <!-- quiz -->
+      <div class="quiz-wrap" id="quizWrap">
+        <div class="divider"></div>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:10px">🎯 Quick Quiz</p>
+        <div class="quiz-q" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-result" id="quizResult">
+          <div class="big-emoji" id="quizEmoji"></div>
+          <h4 id="quizResultTitle"></h4>
+          <p id="quizResultMsg"></p>
+          <div class="xp-earned mt-10" id="xpEarned"></div>
+          <button class="btn btn-primary mt-20" onclick="closeLesson()">🎉 Continue</button>
+        </div>
+      </div>
+
+      <!-- slide nav -->
+      <div class="slide-nav" id="slideNavBar">
+        <button class="btn btn-secondary btn-sm" id="btnPrev" onclick="prevSlide()">← Back</button>
+        <span class="slide-counter" id="slideCounter">1 / 3</span>
+        <button class="btn btn-primary btn-sm" id="btnNext" onclick="nextSlide()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<!-- ══ ACCOUNT SETTINGS MODAL ══════════════════════════════ -->
+<div id="mAccountOverlay" class="m-acct-overlay" onclick="mCloseSettings(event)">
+  <div class="m-acct-modal">
+    <div class="m-acct-header">
+      <div class="m-acct-avatar-lg"><span id="mAcctInitialsLg">D</span></div>
+      <div>
+        <div class="m-acct-name" id="mAcctName">Demo User</div>
+        <div class="m-acct-email" id="mAcctEmail">demo@finora.in</div>
+      </div>
+      <button class="m-acct-close" onclick="mCloseSettings()">✕</button>
+    </div>
+    <div class="m-acct-body">
+      <div class="m-acct-section-title">Account Details</div>
+      <div class="m-acct-row"><span>📧 Email</span><span id="mAcctEmailVal">demo@finora.in</span></div>
+      <div class="m-acct-row"><span>👤 Name</span><span id="mAcctNameVal">Demo User</span></div>
+      <div class="m-acct-row"><span>⭐ XP</span><span id="mAcctXpVal">0 XP · Level 1</span></div>
+      <div class="m-acct-row"><span>🎯 Lessons Done</span><span id="mAcctLessonsVal">0</span></div>
+      <div class="m-acct-section-title" style="margin-top:16px">Preferences</div>
+      <div class="m-acct-row"><span>🌙 Dark Mode</span><label class="tg-switch"><input type="checkbox" id="mDarkMode" onchange="mToggleDark()"/><span class="tg-slider"></span></label></div>
+      <button class="m-acct-logout" onclick="mDoLogout()">🚪 Sign Out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FINANCE GAME OVERLAY ══════════════════════════════ -->
+<div id="gameOverlay" class="game-overlay">
+  <div class="game-modal">
+    <div class="game-modal-header">
+      <span class="game-modal-title">🎮 Finance Quest</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="game-score-badge">💰 Score: <span id="gameScore">0</span></span>
+        <button class="game-close-btn" onclick="closeFinanceGame()">✕</button>
+      </div>
+    </div>
+    <div class="game-hud">
+      <div class="game-hud-item">❤️ <span id="gameLives">3</span></div>
+      <div class="game-hud-item">📏 Level <span id="gameLevel">1</span></div>
+      <div class="game-hud-item">🪙 <span id="gameCoins">0</span> coins</div>
+    </div>
+    <div class="game-tip-bar" id="gameTip">Collect 💰 savings coins, dodge 💸 bad spending!</div>
+    <canvas id="gameCanvas" class="game-canvas"></canvas>
+    <div class="game-controls-hint">📱 Tap/Click to jump &nbsp;|&nbsp; ← → Arrow keys to move</div>
+    <div id="gameStartScreen" class="game-start-screen">
+      <div class="gss-emoji">🎮</div>
+      <div class="gss-title">Finance Quest</div>
+      <div class="gss-sub">Dodge bad spending, collect savings coins &amp; learn financial literacy!</div>
+      <button class="gss-btn" onclick="startFinanceGame()">▶ Start Game</button>
+    </div>
+    <div id="gameOverScreen" class="game-over-screen" style="display:none">
+      <div class="gss-emoji" id="goEmoji">💀</div>
+      <div class="gss-title" id="goTitle">Game Over!</div>
+      <div class="gss-sub" id="goMsg">Better luck next time!</div>
+      <div class="go-xp" id="goXP">+0 XP</div>
+      <button class="gss-btn" onclick="startFinanceGame()">🔄 Play Again</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
